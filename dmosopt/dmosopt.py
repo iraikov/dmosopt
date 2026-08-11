@@ -232,11 +232,13 @@ class DistOptStrategy:
         if len(self.completed) > 0 and not self.has_requests():
             x_completed = np.vstack([x.parameters for x in self.completed])
             y_completed = np.vstack([x.objectives for x in self.completed])
-            n_objectives = y_completed.shape[0]
+            n_prediction = self.prob.n_objectives
+            if self.optimize_mean_variance:
+                n_prediction *= 2
             y_predicted = np.vstack(
                 tuple(
                     map(
-                        lambda x: [np.nan] * n_objectives if x is None else x,
+                        lambda x: [np.nan] * n_prediction if x is None else x,
                         [x.prediction for x in self.completed],
                     )
                 )
